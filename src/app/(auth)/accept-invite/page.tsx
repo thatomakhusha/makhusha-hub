@@ -12,7 +12,7 @@ export default function AcceptInvitePage() {
       <section className="flex min-h-screen flex-col lg:flex-row">
 
         {/* LEFT PANEL */}
-        <div className="relative flex min-h-[650px] w-full flex-col items-center justify-center overflow-hidden bg-hub-background bg-dot-grid px-12 text-white lg:min-h-screen lg:flex-[1.1]">
+        <div className="relative flex min-h-162.5 w-full flex-col items-center justify-center overflow-hidden bg-hub-background bg-dot-grid px-12 text-white lg:min-h-screen lg:flex-[1.1]">
 
           <div className="pointer-events-none absolute left-1/2 top-[22%] h-105 w-105 -translate-x-1/2 -translate-y-1/2 bg-glow-green" />
 

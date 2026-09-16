@@ -2,9 +2,19 @@
 
 import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
+import { createClient } from "@/lib/supabase/clients";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const supabase = createClient();
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
     <main className="min-h-screen w-full">
       <section className="flex min-h-screen flex-col lg:flex-row">
@@ -84,7 +94,29 @@ export default function LoginPage() {
                 Sign in to continue to your workspace.
               </p>
             </div>
-            <form className="mt-10 space-y-6">
+            <form
+              className="mt-10 space-y-6"
+              onSubmit={async (e) => {
+                e.preventDefault();
+
+                setError("");
+                setLoading(true);
+
+                const { error } = await supabase.auth.signInWithPassword({
+                  email,
+                  password,
+                });
+
+                if (error) {
+                  setError("Invalid email or password.");
+                  setLoading(false);
+                  return;
+                }
+
+                router.push("/dashboard");
+                router.refresh();
+              }}
+            >
               <div>
                 <label
                   htmlFor="email"
@@ -97,6 +129,8 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-2 w-full rounded-lg border border-border bg-input px-4 py-3 font-body text-sm text-text outline-none transition focus:border-accent"
                 />
               </div>
@@ -113,6 +147,8 @@ export default function LoginPage() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full rounded-lg border border-border bg-input px-4 py-3 pr-12 font-body text-sm text-text outline-none transition focus:border-accent"
                   />
 
@@ -138,11 +174,17 @@ export default function LoginPage() {
                   Forgot password?
                 </button>
               </div>
+              {error && (
+                <p className="font-body text-sm text-red-500">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
-                className="w-full rounded-lg bg-hub-background px-4 py-3 font-body text-sm font-semibold text-white transition hover:opacity-90"
+                disabled={loading}
+                className="w-full rounded-lg bg-hub-background px-4 py-3 font-body text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Sign in
+                {loading ? "Signing in..." : "Sign in"}
               </button>
               <div className="mt-6 text-center">
                 <p className="font-body text-sm text-text-muted">
