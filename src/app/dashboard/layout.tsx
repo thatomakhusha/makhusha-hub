@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import DashboardShell from "@/components/layout/DashboardShell";
 
 export default async function DashboardLayout({
   children,
@@ -16,9 +17,5 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  return (
-    <div className="min-h-screen bg-surface text-text">
-      {children}
-    </div>
-  );
+  return <DashboardShell>{children}</DashboardShell>;
 }
